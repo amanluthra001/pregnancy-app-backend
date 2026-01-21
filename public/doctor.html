@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Portal</title>
+    <style>
+        :root {
+          --primary: #6a11cb;
+          --primary2: #2575fc;
+          --text: #f3f0ff;
+          --muted: #bdb4e6;
+          --bg: #18122B;
+          --card: #23203b;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 20px;
+            background: linear-gradient(120deg, #18122B 0%, #393053 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1, h2, h3 {
+            color: var(--text);
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px #6a11cb, 0 1px 0 #18122B;
+        }
+        h2, h3 {
+            color: #a084e8;
+        }
+        label, .card, input, select, button {
+            color: var(--text);
+        }
+        .card {
+            background: var(--card);
+        }
+        input, select {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid #393053;
+        }
+        input::placeholder, select {
+            color: var(--muted);
+        }
+        button {
+            color: #fff;
+        }
+        #register-btn {
+            color: #393053;
+        }
+        .card {
+            background: white;
+            padding: 28px 28px 18px 28px;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(106,17,203,0.10);
+            margin-bottom: 28px;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(106,17,203,0.18);
+        }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input, button {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border: 1.5px solid #6a11cb;
+            box-shadow: 0 0 0 2px #e0e7ff;
+        }
+        label {
+            color: #000 !important;
+            font-weight: 600;
+        }
+        .button-group { display: flex; gap: 10px; }
+        button {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(106,17,203,0.08);
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        #register-btn {
+            background: #f1f3f5;
+            color: #495057;
+            box-shadow: none;
+        }
+        #register-btn:hover {
+            background: #e0e7ff;
+            color: #6a11cb;
+        }
+        #logout-btn {
+            background: linear-gradient(90deg, #dc3545 0%, #f87171 100%);
+        }
+        #logout-btn:hover {
+            background: linear-gradient(90deg, #f87171 0%, #dc3545 100%);
+        }
+        ul { list-style-type: none; padding: 0; }
+        li {
+            background: #f3f0ff;
+            padding: 14px 12px 14px 60px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            font-size: 1rem;
+            position: relative;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(106,17,203,0.04);
+            transition: box-shadow 0.2s;
+        }
+        li:hover {
+            box-shadow: 0 4px 16px rgba(106,17,203,0.10);
+        }
+        .avatar {
+            position: absolute;
+            left: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e0e7ff;
+            border: 2px solid #6a11cb;
+        }
+        .remove-patient-btn, .delete-questionnaire-btn {
+            margin-left: auto;
+            background: linear-gradient(90deg, #dc3545 0%, #f87171 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .remove-patient-btn:hover, .delete-questionnaire-btn:hover {
+            background: linear-gradient(90deg, #f87171 0%, #dc3545 100%);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doctor Portal</h1>
+
+        <div id="login-section" class="card">
+            <h2>Sign in / Register</h2>
+            <form id="doctor-login-form">
+                 <input type="text" id="name-input" name="name" placeholder="Full Name (for registration)" style="display: none;" />
+                <input type="email" name="email" placeholder="Email" required />
+                <input type="password" name="password" placeholder="Password" required />
+                <div class="button-group">
+                    <button type="submit">Login</button>
+                    <button type="button" id="register-btn">Register</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="dashboard-section" style="display: none;">
+            <a href="minor_project.html" style="text-align: center; display: block; margin-bottom: 20px;">&larr; Back to Home</a>
+            <div class="card">
+                <h3>Assign Patient</h3>
+                <form id="assign-patient-form">
+                    <input type="text" id="patientUserId" name="patientUserId" placeholder="Paste Patient ID here" />
+                    <button type="submit">Assign</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>Fetal Health Assessment</h3>
+                <form id="fetal-health-form">
+                    <label for="age">Age (years):</label>
+                    <input type="number" id="age" name="age" min="0" max="100" placeholder="e.g. 28" required />
+
+                    <label for="systolicBP">Systolic Blood Pressure (mmHg):</label>
+                    <input type="number" id="systolicBP" name="systolicBP" min="50" max="250" placeholder="e.g. 120" required />
+
+                    <label for="diastolicBP">Diastolic Blood Pressure (mmHg):</label>
+                    <input type="number" id="diastolicBP" name="diastolicBP" min="30" max="150" placeholder="e.g. 80" required />
+
+                    <label for="bs">Blood Sugar (mg/dL):</label>
+                    <input type="number" id="bs" name="bs" min="40" max="400" placeholder="e.g. 90" required />
+
+                    <label for="bodyTemp">Body Temperature (°F):</label>
+
+                    <label for="heartRate">Heart Rate (bpm):</label>
+                    <input type="number" id="heartRate" name="heartRate" min="40" max="200" placeholder="e.g. 75" required />
+
+                    <button type="submit">Assess Fetal Health</button>
+                </form>
+                <div id="fetal-result" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #6a11cb;">
+                    <strong>Risk Level:</strong> <span id="fetal-risk-level"></span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>My Patients</h3>
+                <button id="refresh-patients" style="width: 100%; margin-bottom: 10px;">Refresh</button>
+                <ul id="patients-list"></ul>
+            </div>
+            <div class="card">
+                <h3>Latest Questionnaires</h3>
+                <button id="refresh-questionnaires" style="width: 100%; margin-bottom: 10px;">Refresh</button>
+                <ul id="questionnaires-list"></ul>
+            </div>
+            <button id="logout-btn" style="width: 100%;">Logout</button>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const [loginSection, dashboardSection, loginForm, logoutBtn, registerBtn, assignForm, patientsList, questionnairesList, refreshPatientsBtn, refreshQuestionnairesBtn] = [
+                    'login-section', 'dashboard-section', 'doctor-login-form', 'logout-btn', 'register-btn', 'assign-patient-form', 
+                    'patients-list', 'questionnaires-list', 'refresh-patients', 'refresh-questionnaires'
+                ].map(id => document.getElementById(id));
+                
+                const fetalHealthForm = document.getElementById('fetal-health-form');
+                const fetalResultDiv = document.getElementById('fetal-result');
+                const fetalRiskLevelSpan = document.getElementById('fetal-risk-level');
+                
+                const API_BASE_URL = 'https://your-backend.onrender.com/api';
+
+                const checkAuth = () => {
+                    const token = localStorage.getItem('d_token');
+                    loginSection.style.display = token ? 'none' : 'block';
+                    dashboardSection.style.display = token ? 'block' : 'none';
+                    if (token) {
+                        loadPatients();
+                        loadQuestionnaires();
+                    }
+                };
+
+                const handleApiRequest = async (endpoint, options) => {
+                    const res = await fetch(`${API_BASE_URL}/${endpoint}`, options);
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'An unknown error occurred');
+                    return data;
+                };
+
+
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // Use loginForm.elements to access input values
+                    const nameInput = document.getElementById('name-input');
+                    const name = nameInput.value?.trim();
+                    const email = loginForm.elements["email"]?.value;
+                    const password = loginForm.elements["password"]?.value;
+                    
+                    // Check if in registration mode
+                    const isRegisterMode = nameInput.style.display !== 'none';
+                    
+                    if (isRegisterMode) {
+                        // Registration mode
+                        if (!name || !email || !password) {
+                            alert('Please enter your full name, email, and password to register.');
+                            return;
+                        }
+                        try {
+                            const data = await handleApiRequest('auth/register', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ name, email, password, role: 'doctor' })
+                            });
+                            alert('Registration successful! You can now log in.');
+                            loginForm.reset();
+                            // Hide name field and switch back to login mode
+                            nameInput.style.display = 'none';
+                            nameInput.required = false;
+                            loginForm.querySelector('button[type="submit"]').textContent = 'Login';
+                        } catch (error) {
+                            alert('Registration failed: ' + error.message);
+                        }
+                    } else {
+                        // Login mode
+                        if (!email || !password) {
+                            alert('Please enter email and password to login.');
+                            return;
+                        }
+                        try {
+                            const data = await handleApiRequest('auth/login', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, password, role: 'doctor' })
+                            });
+                            localStorage.setItem('d_token', data.token);
+                            // Always refresh patients and questionnaires after login
+                            loadPatients();
+                            loadQuestionnaires();
+                            checkAuth();
+                        } catch (error) {
+                            alert('Login failed: ' + error.message);
+                        }
+                    }
+                });
+
+                registerBtn.addEventListener('click', async () => {
+                    // Toggle name field visibility
+                    const nameInput = document.getElementById('name-input');
+                    const isHidden = nameInput.style.display === 'none';
+                    
+                    if (isHidden) {
+                        // Show name field for registration mode
+                        nameInput.style.display = 'block';
+                        nameInput.required = true;
+                        loginForm.querySelector('button[type="submit"]').textContent = 'Register';
+                    } else {
+                        // Hide name field for login mode
+                        nameInput.style.display = 'none';
+                        nameInput.required = false;
+                        loginForm.querySelector('button[type="submit"]').textContent = 'Login';
+                    }
+                });
+
+                assignForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const token = localStorage.getItem('d_token');
+                    const patientId = assignForm.patientUserId.value.trim();
+                    if (!token || !patientId) return alert('Please login and enter a Patient User ID.');
+                    
+                    try {
+                        await handleApiRequest('doctor/assign', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ patientId })
+                        });
+                        alert('Patient assigned successfully!');
+                        assignForm.reset();
+                        loadPatients();
+                    } catch (error) {
+                        alert('Failed to assign patient: ' + error.message);
+                    }
+                });
+
+                // Fetal Health Form Handler
+                fetalHealthForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const token = localStorage.getItem('d_token');
+                    if (!token) return alert('Please login first');
+
+                    try {
+                        const formData = new FormData(fetalHealthForm);
+                        const answers = {
+                            age: parseFloat(formData.get('age')),
+                            systolicBP: parseFloat(formData.get('systolicBP')),
+                            diastolicBP: parseFloat(formData.get('diastolicBP')),
+                            bs: parseFloat(formData.get('bs')),
+                            bodyTemp: parseFloat(formData.get('bodyTemp')),
+                            heartRate: parseFloat(formData.get('heartRate'))
+                        };
+
+                        const data = await handleApiRequest('doctor/fetal-assessment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ answers })
+                        });
+
+                        fetalRiskLevelSpan.textContent = data.result.riskLevel || data.result.prediction;
+                        fetalResultDiv.style.display = 'block';
+                        alert('Fetal Health Assessment Complete!');
+                        fetalHealthForm.reset();
+                    } catch (error) {
+                        alert('Failed to submit fetal assessment: ' + error.message);
+                    }
+                });
+
+                async function loadData(endpoint, listElement, itemFormatter) {
+                    const token = localStorage.getItem('d_token');
+                    if (!token) return;
+                    listElement.innerHTML = '<li>Loading...</li>';
+                    try {
+                        const data = await handleApiRequest(endpoint, { headers: { 'Authorization': `Bearer ${token}` } });
+                        const items = data.patients || data.questionnaires;
+                        listElement.innerHTML = '';
+                        if (items && items.length > 0) {
+                            items.forEach(item => {
+                                const li = document.createElement('li');
+                                li.innerHTML = itemFormatter(item);
+                                listElement.appendChild(li);
+                            });
+                        } else {
+                            listElement.innerHTML = '<li>No data found.</li>';
+                        }
+                    } catch (error) {
+                        listElement.innerHTML = `<li>Error loading data: ${error.message}</li>`;
+                    }
+                }
+                
+                const loadPatients = () => loadData('doctor/patients', patientsList, p => `
+                    <!-- Avatar image removed as requested -->
+                    <span>${p.name} (ID: <code>${p._id}</code>)</span>
+                    <button class="remove-patient-btn" data-id="${p._id}">Remove</button>
+                `);
+                const loadQuestionnaires = () => loadData('doctor/patients/latest', questionnairesList, q => `
+                    Patient: ${q.patientName}, Risk: ${q.riskLabel}, Score: ${q.riskScore}
+                    <button class="delete-questionnaire-btn" data-id="${q.id}" style="margin-left:10px;background:#dc3545;color:white;">Delete</button>
+                `);
+
+
+                refreshPatientsBtn.addEventListener('click', loadPatients);
+                refreshQuestionnairesBtn.addEventListener('click', loadQuestionnaires);
+
+                // Delegate remove patient button click
+                patientsList.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('remove-patient-btn')) {
+                        const patientId = e.target.getAttribute('data-id');
+                        if (confirm('Remove this patient?')) {
+                            const token = localStorage.getItem('d_token');
+                            try {
+                                await handleApiRequest(`doctor/patients/${patientId}`, {
+                                    method: 'DELETE',
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                loadPatients();
+                            } catch (error) {
+                                alert('Failed to remove patient: ' + error.message);
+                            }
+                        }
+                    }
+                });
+
+                // Delegate delete questionnaire button click
+                questionnairesList.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('delete-questionnaire-btn')) {
+                        const qid = e.target.getAttribute('data-id');
+                        if (confirm('Delete this questionnaire?')) {
+                            const token = localStorage.getItem('d_token');
+                            try {
+                                await handleApiRequest(`doctor/questionnaire/${qid}`, {
+                                    method: 'DELETE',
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                loadQuestionnaires();
+                            } catch (error) {
+                                alert('Failed to delete questionnaire: ' + error.message);
+                            }
+                        }
+                    }
+                });
+
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('d_token');
+                    checkAuth();
+                });
+                
+                window.addEventListener('beforeunload', () => localStorage.removeItem('d_token'));
+
+                checkAuth();
+            });
+        </script>
+    </div>
+</body>
+</html>

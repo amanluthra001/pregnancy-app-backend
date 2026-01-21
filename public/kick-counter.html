@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/><title>Fetal Kick Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="./styles.css"/>
+  <style>
+    body {
+      background: linear-gradient(120deg, #18122B 0%, #393053 100%) !important;
+      color: #f3f0ff !important;
+    }
+    .card {
+      background: #23203b !important;
+      color: #f3f0ff !important;
+      box-shadow: 0 4px 20px rgba(106,17,203,0.18) !important;
+    }
+    h1, h2, h3 {
+      color: #f3f0ff !important;
+      text-shadow: 0 2px 12px #6a11cb, 0 1px 0 #18122B;
+    }
+    .muted { color: #bdb4e6 !important; }
+    input, textarea {
+      background: #18122B !important;
+      color: #f3f0ff !important;
+      border: 1px solid #393053 !important;
+    }
+    input::placeholder, textarea::placeholder { color: #bdb4e6 !important; }
+    .btn.primary {
+      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%) !important;
+      color: #fff !important;
+    }
+    .btn.primary:hover {
+      background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%) !important;
+    }
+    .btn.ghost {
+      background: #23203b !important;
+      color: #f3f0ff !important;
+      border: 1px solid #393053 !important;
+    }
+    .notice {
+      background: #23203b !important;
+      color: #f3f0ff !important;
+      border: 1px solid #393053 !important;
+    }
+    footer { color: #bdb4e6 !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header"><div class="brand"><div class="logo"></div><h1>Fetal Kick Counter</h1></div><a href="./minor_project.html">← Back</a></div>
+
+  <div class="card">
+    <h2>Two‑hour session</h2>
+    <p class="muted">Tap “Count kick” for each movement; aim for 10 in two hours.</p>
+    <div class="toolbar">
+      <button class="btn primary" onclick="countKick()">Count kick</button>
+      <button class="btn ghost" onclick="reset()">Reset</button>
+    </div>
+    <div class="notice" id="status" style="margin-top:12px">Kicks: 0 | Elapsed: 00:00</div>
+  </div>
+
+  <div class="card">
+    <h3>Notes</h3>
+    <textarea id="notes" class="input" placeholder="Optional observations..." rows="4"></textarea>
+    <button class="btn primary" style="margin-top:10px" onclick="saveLocal()">Save locally</button>
+    <div class="muted" style="margin-top:8px" id="savedMsg"></div>
+  </div>
+
+  <footer>© 2025 Maternal Health Platform</footer>
+</div>
+<script>
+let count=0, start=null, timer=null;
+function fmt(ms){ const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000); return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"); }
+function update(){ if(!start) return; const el=document.getElementById("status"); el.textContent=`Kicks: ${count} | Elapsed: ${fmt(Date.now()-start)}`; }
+function countKick(){ if(!start){ start=Date.now(); timer=setInterval(update,500); } count++; update(); }
+function reset(){ count=0; start=null; clearInterval(timer); document.getElementById("status").textContent="Kicks: 0 | Elapsed: 00:00"; }
+function saveLocal(){ const data={ ts:new Date().toISOString(), count, duration:start?Date.now()-start:0, notes:document.getElementById("notes").value }; const arr=JSON.parse(localStorage.getItem("kicks")||"[]"); arr.unshift(data); localStorage.setItem("kicks",JSON.stringify(arr)); document.getElementById("savedMsg").textContent="Saved locally"; }
+</script>
+</body>
+</html>

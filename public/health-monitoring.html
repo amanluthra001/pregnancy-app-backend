@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/><title>Health Monitoring</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<div class="container">
+  <div class="header"><div class="brand"><div class="logo"></div><h1>Health Monitoring</h1></div><a href="./minor_project.html">← Back</a></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Log vitals</h2>
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div><label class="label">Systolic BP</label><input id="sbp" type="number" class="input"/></div>
+        <div><label class="label">Diastolic BP</label><input id="dbp" type="number" class="input"/></div>
+      </div>
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div><label class="label">Fasting Glucose</label><input id="glu" type="number" class="input"/></div>
+        <div><label class="label">Weight (kg)</label><input id="wt" type="number" class="input"/></div>
+      </div>
+      <button class="btn primary" style="margin-top:10px" onclick="add()">Add entry</button>
+    </div>
+
+    <div class="card">
+      <h2>History</h2>
+      <ul id="list" class="list"></ul>
+    </div>
+  </div>
+
+  <footer>© 2025 Maternal Health Platform</footer>
+</div>
+<script>
+function load(){ const arr=JSON.parse(localStorage.getItem("vitals")||"[]"); document.getElementById("list").innerHTML=arr.map(v=>`<li>${new Date(v.ts).toLocaleString()} — BP ${v.sbp}/${v.dbp}, Glu ${v.glu}, Wt ${v.wt} kg</li>`).join(""); }
+function add(){ const v={ ts:Date.now(), sbp:+sbp.value||0, dbp:+dbp.value||0, glu:+glu.value||0, wt:+wt.value||0 }; const arr=JSON.parse(localStorage.getItem("vitals")||"[]"); arr.unshift(v); localStorage.setItem("vitals",JSON.stringify(arr)); load(); }
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Portal</title>
+    <style>
+        :root {
+          --primary: #6a11cb;
+          --primary2: #2575fc;
+          --text: #f3f0ff;
+          --muted: #bdb4e6;
+          --bg: #18122B;
+          --card: #23203b;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 20px;
+            background: linear-gradient(120deg, #18122B 0%, #393053 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1, h2 {
+            color: var(--text);
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px #6a11cb, 0 1px 0 #18122B;
+        }
+        h2 {
+            color: #a084e8;
+        }
+        h3 {
+            color: #000 !important;
+            font-weight: 700;
+        }
+        label, .welcome-message, .card, input, select, button {
+            color: var(--text);
+        }
+        .card {
+            background: var(--card);
+        }
+        input, select {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid #393053;
+        }
+        input::placeholder, select {
+            color: var(--muted);
+        }
+        button {
+            color: #fff;
+        }
+        #register-btn {
+            color: #393053;
+        }
+        .card {
+            background: white;
+            padding: 28px 28px 18px 28px;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(106,17,203,0.10);
+            margin-bottom: 28px;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(106,17,203,0.18);
+        }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input, select, button {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border: 1.5px solid #6a11cb;
+            box-shadow: 0 0 0 2px #e0e7ff;
+        }
+        label {
+            color: #000 !important;
+            font-weight: 600;
+        }
+        .button-group { display: flex; gap: 10px; }
+        button {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(106,17,203,0.08);
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        #register-btn {
+            background: #f1f3f5;
+            color: #495057;
+            box-shadow: none;
+        }
+        #register-btn:hover {
+            background: #e0e7ff;
+            color: #6a11cb;
+        }
+        #logout-btn {
+            background: linear-gradient(90deg, #dc3545 0%, #f87171 100%);
+        }
+        #logout-btn:hover {
+            background: linear-gradient(90deg, #f87171 0%, #dc3545 100%);
+        }
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #000 !important;
+        }
+        .avatar {
+            display: block;
+            margin: 0 auto 10px auto;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e0e7ff;
+            border: 2px solid #6a11cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patient Portal</h1>
+
+        <div id="login-section" class="card">
+            <h2>Sign in / Register</h2>
+            <form id="patient-login-form">
+                <input type="text" id="name-input" name="name" placeholder="Full Name (for registration)" style="display: none;" />
+                <input type="email" name="email" placeholder="Email" required />
+                <input type="password" name="password" placeholder="Password" required />
+                <div class="button-group">
+                    <button type="submit">Login</button>
+                    <button type="button" id="register-btn">Register</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="dashboard-section" class="card" style="display: none;">
+             <a href="minor_project.html" style="text-align: center; display: block; margin-bottom: 20px;">&larr; Back to Home</a>
+            <div class="welcome-message">
+                <!-- Avatar image removed as requested -->
+                <h2 style="margin-bottom: 5px;">Welcome!</h2>
+                <p>Your User ID is: <strong id="patient-user-id"></strong> <button id="copy-id-btn">Copy</button></p>
+            </div>
+            <h3>Maternal Health Questionnaire</h3>
+            <form id="questionnaire-form">
+                <label for="baseline_value">Baseline Value:</label>
+                <input type="number" id="baseline_value" name="baseline_value" min="0" max="255" placeholder="e.g. 120" required />
+
+                <label for="accelerations">Accelerations (count):</label>
+                <input type="number" id="accelerations" name="accelerations" min="0" max="100" placeholder="e.g. 10" required />
+
+                <label for="fetal_movement">Fetal Movement (count):</label>
+                <input type="number" id="fetal_movement" name="fetal_movement" min="0" max="100" placeholder="e.g. 8" required />
+
+                <label for="uterine_contractions">Uterine Contractions (count):</label>
+                <input type="number" id="uterine_contractions" name="uterine_contractions" min="0" max="100" placeholder="e.g. 3" required />
+
+                <label for="light_decelerations">Light Decelerations (count):</label>
+                <input type="number" id="light_decelerations" name="light_decelerations" min="0" max="50" placeholder="e.g. 0" required />
+
+                <label for="severe_decelerations">Severe Decelerations (count):</label>
+                <input type="number" id="severe_decelerations" name="severe_decelerations" min="0" max="50" placeholder="e.g. 0" required />
+
+                <label for="abnormal_short_term_variability">Abnormal Short-term Variability (%):</label>
+                <input type="number" id="abnormal_short_term_variability" name="abnormal_short_term_variability" min="0" max="100" step="0.1" placeholder="e.g. 5.5" required />
+
+                <label for="mean_value_of_short_term_variability">Mean Value of Short-term Variability:</label>
+                <input type="number" id="mean_value_of_short_term_variability" name="mean_value_of_short_term_variability" min="0" max="100" step="0.1" placeholder="e.g. 12.5" required />
+
+                <label for="percentage_of_time_with_abnormal_long_term_variability">Percentage of Time with Abnormal Long-term Variability (%):</label>
+                <input type="number" id="percentage_of_time_with_abnormal_long_term_variability" name="percentage_of_time_with_abnormal_long_term_variability" min="0" max="100" step="0.1" placeholder="e.g. 2.3" required />
+
+                <label for="mean_value_of_long_term_variability">Mean Value of Long-term Variability:</label>
+                <input type="number" id="mean_value_of_long_term_variability" name="mean_value_of_long_term_variability" min="0" max="100" step="0.1" placeholder="e.g. 18.5" required />
+
+                <label for="histogram_width">Histogram Width:</label>
+                <input type="number" id="histogram_width" name="histogram_width" min="0" max="255" placeholder="e.g. 64" required />
+
+                <label for="histogram_min">Histogram Min:</label>
+                <input type="number" id="histogram_min" name="histogram_min" min="0" max="255" placeholder="e.g. 60" required />
+
+                <label for="histogram_max">Histogram Max:</label>
+                <input type="number" id="histogram_max" name="histogram_max" min="0" max="255" placeholder="e.g. 180" required />
+
+                <label for="histogram_number_of_peaks">Histogram Number of Peaks:</label>
+                <input type="number" id="histogram_number_of_peaks" name="histogram_number_of_peaks" min="0" max="50" placeholder="e.g. 3" required />
+
+                <label for="histogram_number_of_zeroes">Histogram Number of Zeroes:</label>
+                <input type="number" id="histogram_number_of_zeroes" name="histogram_number_of_zeroes" min="0" max="50" placeholder="e.g. 0" required />
+
+                <label for="histogram_mode">Histogram Mode:</label>
+                <input type="number" id="histogram_mode" name="histogram_mode" min="0" max="255" placeholder="e.g. 120" required />
+
+                <label for="histogram_mean">Histogram Mean:</label>
+                <input type="number" id="histogram_mean" name="histogram_mean" min="0" max="255" step="0.1" placeholder="e.g. 126.5" required />
+
+                <label for="histogram_median">Histogram Median:</label>
+                <input type="number" id="histogram_median" name="histogram_median" min="0" max="255" placeholder="e.g. 128" required />
+
+                <label for="histogram_variance">Histogram Variance:</label>
+                <input type="number" id="histogram_variance" name="histogram_variance" min="0" max="1000" step="0.1" placeholder="e.g. 156.5" required />
+
+                <label for="histogram_tendency">Histogram Tendency:</label>
+                <input type="number" id="histogram_tendency" name="histogram_tendency" min="-1" max="1" step="0.1" placeholder="e.g. 0.2" required />
+
+                <button type="submit">Submit Maternal Health Assessment</button>
+            </form>
+            <div id="maternal-result" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #6a11cb;">
+                <strong>Risk Assessment:</strong> <span id="maternal-risk-level"></span>
+            </div>
+            <button id="logout-btn" style="margin-top: 20px; width: 100%;">Logout</button>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const [loginSection, dashboardSection, loginForm, logoutBtn, registerBtn, questionnaireForm, patientIdSpan, copyIdBtn] = [
+                    'login-section', 'dashboard-section', 'patient-login-form', 'logout-btn', 'register-btn', 
+                    'questionnaire-form', 'patient-user-id', 'copy-id-btn'
+                ].map(id => document.getElementById(id));
+                
+                const API_BASE_URL = 'https://your-backend.onrender.com/api';
+
+                const checkAuth = () => {
+                    const token = localStorage.getItem('p_token');
+                    const user = JSON.parse(localStorage.getItem('p_user'));
+                    loginSection.style.display = (token && user) ? 'none' : 'block';
+                    dashboardSection.style.display = (token && user) ? 'block' : 'none';
+                    if (user) patientIdSpan.textContent = user.id;
+                };
+
+                const handleApiRequest = async (endpoint, options) => {
+                    const res = await fetch(`${API_BASE_URL}/${endpoint}`, options);
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'An unknown error occurred');
+                    return data;
+                };
+
+
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // Use loginForm.elements to access input values
+                    const nameInput = document.getElementById('name-input');
+                    const name = nameInput.value?.trim();
+                    const email = loginForm.elements["email"]?.value;
+                    const password = loginForm.elements["password"]?.value;
+                    
+                    // Check if in registration mode
+                    const isRegisterMode = nameInput.style.display !== 'none';
+                    
+                    if (isRegisterMode) {
+                        // Registration mode
+                        if (!name || !email || !password) {
+                            alert('Please enter your full name, email, and password to register.');
+                            return;
+                        }
+                        try {
+                            const data = await handleApiRequest('auth/register', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ name, email, password, role: 'patient' })
+                            });
+                            alert('Registration successful! You can now log in.');
+                            loginForm.reset();
+                            // Hide name field and switch back to login mode
+                            nameInput.style.display = 'none';
+                            nameInput.required = false;
+                            loginForm.querySelector('button[type="submit"]').textContent = 'Login';
+                        } catch (error) {
+                            alert('Registration failed: ' + error.message);
+                        }
+                    } else {
+                        // Login mode
+                        if (!email || !password) {
+                            alert('Please enter email and password to login.');
+                            return;
+                        }
+                        try {
+                            const data = await handleApiRequest('auth/login', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, password, role: 'patient' })
+                            });
+                            localStorage.setItem('p_token', data.token);
+                            localStorage.setItem('p_user', JSON.stringify({ id: data.user._id, name: data.user.name }));
+                            checkAuth();
+                        } catch (error) {
+                            alert('Login failed: ' + error.message);
+                        }
+                    }
+                });
+
+                registerBtn.addEventListener('click', async () => {
+                    // Toggle name field visibility
+                    const nameInput = document.getElementById('name-input');
+                    const isHidden = nameInput.style.display === 'none';
+                    
+                    if (isHidden) {
+                        // Show name field for registration mode
+                        nameInput.style.display = 'block';
+                        nameInput.required = true;
+                        loginForm.elements["submit"].textContent = 'Register';
+                    } else {
+                        // Hide name field for login mode
+                        nameInput.style.display = 'none';
+                        nameInput.required = false;
+                        loginForm.elements["submit"].textContent = 'Login';
+                    }
+                });
+                
+                copyIdBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(patientIdSpan.textContent);
+                    alert('Patient ID copied!');
+                });
+
+                questionnaireForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const token = localStorage.getItem('p_token');
+                    if (!token) return alert('Please login first');
+
+                    try {
+                        const formData = new FormData(questionnaireForm);
+                        const answers = {};
+                        for (let [key, value] of formData.entries()) {
+                            answers[key] = parseFloat(value);
+                        }
+
+                        const data = await handleApiRequest('patient/maternal-assessment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ answers })
+                        });
+
+                        const riskMap = { 1: 'Normal', 2: 'Suspect', 3: 'Pathological' };
+                        const riskLabel = riskMap[data.result.riskLevel] || data.result.riskLevel;
+                        
+                        document.getElementById('maternal-risk-level').textContent = riskLabel;
+                        document.getElementById('maternal-result').style.display = 'block';
+                        alert(`Maternal Health Assessment: ${riskLabel}`);
+                        questionnaireForm.reset();
+                        document.getElementById('maternal-result').style.display = 'none';
+                    } catch (error) {
+                        alert('Failed to submit assessment: ' + error.message);
+                    }
+                });
+
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('p_token');
+                    localStorage.removeItem('p_user');
+                    checkAuth();
+                });
+                
+                window.addEventListener('beforeunload', () => localStorage.removeItem('p_token'));
+                
+                checkAuth();
+            });
+        </script>
+    </div>
+</body>
+</html>
