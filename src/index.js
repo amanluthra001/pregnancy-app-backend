@@ -18,7 +18,7 @@ app.use(cors({
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5500",
     "http://localhost:5500",
-    "https://fetalhealth-three.vercel.app"
+    "https://fetalhealth-three.vercel.app" // your Vercel frontend
   ],
   credentials: true
 }));
@@ -34,17 +34,21 @@ app.use("/api/doctor", doctorRoutes);
 /* ---------------- database ---------------- */
 const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("MongoDB error:", err));
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch(err => console.error("❌ MongoDB error:", err));
 
 /* ---------------- LISTEN (Render needs this) ---------------- */
 const PORT = process.env.PORT || 3000;
 
-// Only listen when NOT running on Vercel
-if (process.env.RENDER || process.env.NODE_ENV !== "production") {
+// Render sets process.env.RENDER = true automatically
+// Vercel does not need app.listen, it uses serverless functions
+if (process.env.RENDER) {
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
   });
 }
 
