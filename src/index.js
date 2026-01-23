@@ -3,10 +3,15 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.js";
 import patientRoutes from "./routes/patient.js";
 import doctorRoutes from "./routes/doctor.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 const app = express();
@@ -25,7 +30,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-/* ---------------- routes ---------------- */
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Serve index.html for root path
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: path.join(__dirname, '../public') });
+});
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/patient", patientRoutes);
