@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Serve index.html for root path
 app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: path.join(__dirname, '../public') });
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRoutes);
